@@ -26,9 +26,33 @@
         <poi-ooxml.version>5.2.5</poi-ooxml.version>
         <rest-assured.version>5.3.2</rest-assured.version>
         <logback-classic.version>1.4.14</logback-classic.version>
+        <slf4j-api.version>2.0.11</slf4j-api.version>
+        <extent-pdf-report.version>2.12.0</extent-pdf-report.version>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/tech.grasshopper/extent-pdf-report -->
+        <dependency>
+            <groupId>tech.grasshopper</groupId>
+            <artifactId>extent-pdf-report</artifactId>
+            <version>${extent-pdf-report.version}</version>
+        </dependency>
+
+
+        <!-- Exclude SLF4J simple binding -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version> <!-- Use the version you are currently using -->
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
         <!--dependency>
             <groupId>ch.qos.logback</groupId>

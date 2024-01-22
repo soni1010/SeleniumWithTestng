@@ -1,0 +1,22 @@
+pdf:
+  enable: true
+  outputDirectory: /SeleniumWithTestng/ExtentReports/
+  fileName: MySeleniumReport.pdf
+  title: Selenium Test Report
+  pageSize: A4
+  margin:
+    top: 36
+    right: 36
+    bottom: 36
+    left: 36
+  font:
+    family: Arial
+    size: 10
+  metadata:
+    author: Harender
+    subject: Selenium TestNG ExtentReport
+    keywords: Selenium, TestNG, Cucumber - POM Report
+  bookmarks:
+    enable: true
+    level: 1
+    sequence: true

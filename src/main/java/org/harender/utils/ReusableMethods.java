@@ -21,7 +21,6 @@ public class ReusableMethods {
     private static String path = "C:\\Users\\User\\Documents\\GitHub\\SeleniumWithTestng\\ScreenShotsDirectory\\";
     private static String scrnShotFolderPath;
 
-
     // Initialize WebDriver with default settings
     public static WebDriver initializeDriver() {
         // Code to initialize WebDriver with default settings
@@ -70,6 +69,19 @@ public class ReusableMethods {
         driver = new ChromeDriver(options);
         return driver;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
     //Fluent Wait
     public static WebElement waitForElementPresent(WebDriver driver, By locator, int timeoutInSeconds,long pollingFrequency) {
         FluentWait<WebDriver> wait = new FluentWait<>(driver)
