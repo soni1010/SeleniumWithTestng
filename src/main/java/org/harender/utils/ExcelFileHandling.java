@@ -14,7 +14,7 @@ public class ExcelFileHandling {
 
     static List<String[]> unMatchingRecords = new ArrayList<>();
 
-    static List<Integer> mismatchIndex = new ArrayList<Integer>();
+    static List<Integer> matchingRowsIndex = new ArrayList<Integer>();
 
     static int sheetNumberRightNowInComparison=0;
 
@@ -40,13 +40,13 @@ public class ExcelFileHandling {
         try {
 
             String file1Path=filePathWhoseDataToCompare;
-            int fileCounter=0;
+            int fileCounter=1;
 
             for(String fileWhereToComparePath:filesPathwithWhomToCompare) {
 
-                System.out.println("Comparing file ||"+getFileNameAndSheetName(file1Path)+"|| with file \n||"+getFileNameAndSheetName(fileWhereToComparePath)+ "||");
+                System.out.println("-----------------------------------------------------------------------------------------------------------");
+                System.out.println(fileCounter+" - Comparing file ||"+getFileNameAndSheetName(file1Path)+"|| with file \n||"+getFileNameAndSheetName(fileWhereToComparePath)+ "||");
 
-                sheetNumberRightNowInComparison++;
                 List<String[]> fileOfWhichToCompareDataIncludingHeaders = readExcelFile(file1Path);
                 List<String[]> fileInWhichToCompareDataIncludingHeaders = readExcelFile(fileWhereToComparePath);
 
@@ -58,35 +58,36 @@ public class ExcelFileHandling {
                 List<String[]> file1WithOutHeaders =fileOfWhichToCompareDataIncludingHeaders;
                 List<String[]> file2WithOutHeaders =fileInWhichToCompareDataIncludingHeaders;
 
-                if (headersMatching(fromWhichHeaders, toWhichHeaders))
-                    System.out.println("Headers of "+getFileNameAndSheetName(file1Path)+" and \n"+getFileNameAndSheetName(fileWhereToComparePath)+" are Matching Successfully !");
+                fileCounter++;
+
+                if (headersMatching(fromWhichHeaders, toWhichHeaders)) {
+                    System.out.println("Headers of " + getFileNameAndSheetName(file1Path) + " and \n" + getFileNameAndSheetName(fileWhereToComparePath) + " are Matching Successfully !");
+                    matchingRecords.add(fromWhichHeaders);
+                }
                 else {
-                    System.out.println("Headers of "+getFileNameAndSheetName(file1Path)+" and \n"+getFileNameAndSheetName(fileWhereToComparePath)+" are Mismatched - Please Verify !");
-                    break;
+                    System.out.println("Headers are Mismatched - Please Verify !");
+                    stringArrayPrinter(getFileNameAndSheetName(file1Path)+" Headers ",fromWhichHeaders);
+                    stringArrayPrinter(getFileNameAndSheetName(fileWhereToComparePath)+" Headers - ",toWhichHeaders);
+                    continue;
                 }
 
-                //printing the sheet name and number of records without Headers now
-                OutPutList.add("No. of records in file "+getFileNameAndSheetName(file1Path)+" (input data) - " + file1WithOutHeaders.size()
-                        + "\nNo. of records in file 2 "+getFileNameAndSheetName(fileWhereToComparePath)+" (input data) - " + file2WithOutHeaders.size());
-
-                System.out.println("\nNo. of records in file "+getFileNameAndSheetName(file1Path)+" (input data) - " + file1WithOutHeaders.size()
-                        + "\nNo. of records in file 2 "+getFileNameAndSheetName(fileWhereToComparePath)+" (input data) - " + file2WithOutHeaders.size()+"\n");
+                System.out.println("\nNo. of records in "+getFileNameAndSheetName(file1Path)+" (input data) - " + file1WithOutHeaders.size()
+                        + "\nNo. of records in "+getFileNameAndSheetName(fileWhereToComparePath)+" (input data) - " + file2WithOutHeaders.size()+"\n");
 
                 //matching check of current two files data
-                List<Integer> matchingRowsIndex= findMatchingRecords(file1WithOutHeaders, file2WithOutHeaders);
-                fileCounter++;
-                System.out.println(matchingRowsIndex.size()+" - Matching in "+fileCounter+" compare");
+                matchingRowsIndex= findMatchingAndUnmatchingRecords(file1WithOutHeaders, file2WithOutHeaders);
+
+                System.out.println("Matching Records - "+(matchingRecords.size()-1) +
+                                 "\nUnmatching Records - "+(unMatchingRecords.size()) +"\n");
+
+                matchingRecords.clear();
+                unMatchingRecords.clear();
 
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    private static void getHeadersOnly(){
-
 
     }
 
@@ -101,31 +102,31 @@ public class ExcelFileHandling {
         }
     }
 
-    private static List<Integer> findMatchingRecords(List<String[]> file1Data, List<String[]> file2Data) {
-
+    private static List<Integer> findMatchingAndUnmatchingRecords(List<String[]> file1Data, List<String[]> file2Data) {
         int checkingRowNumber=0;
         List<Integer> matchingRowsIndexes=new ArrayList<>(0);
 
         for (String[] rowOfSheet1 : file1Data) {
             checkingRowNumber++;
+            boolean flag=false;
             for ( String[] rowOfSheet2 : file2Data ) {
                 if (isEqual(rowOfSheet1, rowOfSheet2)) {
                     matchingRecords.add(rowOfSheet1);
                     matchingRowsIndexes.add(checkingRowNumber);
+                    flag=true;
                     break;
                 }
+            }
+            if(flag==false){
+                unMatchingRecords.add(rowOfSheet1);
             }
         }
 
         return matchingRowsIndexes;
     }
-//    if(file2Data.size()==RowNumSheet2) {
-//                        unmatchCountVerification++;
-//                        String[] infoAboutUnMatching= {"Row Number Sheet 1: "+RowNumSheet1+"\nRow Number Sheet 2: "+RowNumSheet2+" "};
-//                        System.out.println("Row Number Sheet 1: "+RowNumSheet1+"\nRow Number Sheet 2: "+RowNumSheet2+" ");
-//                        unMatchingRecords.add(infoAboutUnMatching);
-//                        unMatchingRecords.add(rowOfSheet1);
-//                    }
+
+
+//
 
     private static String getFileNameAndSheetName(String filePath) throws Exception {
         try {
@@ -175,22 +176,17 @@ public class ExcelFileHandling {
     }
 
     private static void stringArrayPrinter(String whatIsPrinting, String[] arrayToPrint) {
-
-        OutPutList.add(whatIsPrinting);
+        System.out.println(whatIsPrinting);
         String completeRecordInOneline="";
         for (String s : arrayToPrint) {
             completeRecordInOneline=completeRecordInOneline+""+s+" | ";
             //OutPutList.add(s + " | ");
         }
-
-        OutPutList.add(completeRecordInOneline);
+        System.out.println(completeRecordInOneline);
     }
 
     private static boolean headersMatching(String[] sheet1Headers, String[] sheet2Headers) {
         try {
-            stringArrayPrinter("Headers : ", sheet1Headers);
-            stringArrayPrinter("Headers : ", sheet2Headers);
-
             return java.util.Arrays.equals(sheet1Headers, sheet2Headers);
         } catch (Exception e) {
             throw new RuntimeException(e);
