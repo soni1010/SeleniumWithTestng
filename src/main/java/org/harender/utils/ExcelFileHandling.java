@@ -3,20 +3,13 @@ package org.harender.utils;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
-
 import org.apache.poi.ss.usermodel.*;
 
-
 public class ExcelFileHandling {
-    static List<String> OutPutList = new ArrayList<String>();
 
     static List<String[]> matchingRecords = new ArrayList<>();
-
     static List<String[]> unMatchingRecords = new ArrayList<>();
-
     static List<Integer> matchingRowsIndex = new ArrayList<Integer>();
-
-    static int sheetNumberRightNowInComparison=0;
 
     public static void main(String[] args) {
         try {
@@ -34,7 +27,6 @@ public class ExcelFileHandling {
             e.printStackTrace();
         }
     }
-
     private static void CompareExcelSheets(String filePathWhoseDataToCompare,List<String> filesPathwithWhomToCompare) {
 
         try {
@@ -90,7 +82,7 @@ public class ExcelFileHandling {
         }
 
     }
-
+    // This Writing Inside a file is pending , If required we can do it
     private static void writeArrayListToFile(List<String> dataList, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (String data : dataList) {
@@ -101,7 +93,6 @@ public class ExcelFileHandling {
             e.printStackTrace();
         }
     }
-
     private static List<Integer> findMatchingAndUnmatchingRecords(List<String[]> file1Data, List<String[]> file2Data) {
         int checkingRowNumber=0;
         List<Integer> matchingRowsIndexes=new ArrayList<>(0);
@@ -121,13 +112,8 @@ public class ExcelFileHandling {
                 unMatchingRecords.add(rowOfSheet1);
             }
         }
-
         return matchingRowsIndexes;
     }
-
-
-//
-
     private static String getFileNameAndSheetName(String filePath) throws Exception {
         try {
             String sheetName = WorkbookFactory.create(new FileInputStream(filePath)).getSheetAt(0).getSheetName();
@@ -138,10 +124,7 @@ public class ExcelFileHandling {
             return " Exception ";
         }
     }
-
     private static List<String[]> readExcelFile(String filePath) throws IOException {
-
-
         List<String[]> data = new ArrayList<>();
 
         FileInputStream file = new FileInputStream(filePath);
@@ -166,7 +149,6 @@ public class ExcelFileHandling {
 
         return data;
     }
-
     private static boolean isEqual(String[] row1, String[] row2) {
         // Implement logic to compare rows
         // System.out.println(stringArrayPrinter(row1));
@@ -174,7 +156,6 @@ public class ExcelFileHandling {
 
         return java.util.Arrays.equals(row1, row2);
     }
-
     private static void stringArrayPrinter(String whatIsPrinting, String[] arrayToPrint) {
         System.out.println(whatIsPrinting);
         String completeRecordInOneline="";
@@ -184,7 +165,6 @@ public class ExcelFileHandling {
         }
         System.out.println(completeRecordInOneline);
     }
-
     private static boolean headersMatching(String[] sheet1Headers, String[] sheet2Headers) {
         try {
             return java.util.Arrays.equals(sheet1Headers, sheet2Headers);
