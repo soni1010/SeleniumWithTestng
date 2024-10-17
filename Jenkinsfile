@@ -6,11 +6,7 @@ pipeline {
                 git url: 'https://github.com/soni1010/SeleniumWithTestng'
             }
         }
-        stage('Build') {
-            steps {
-                sh 'mvn install'
-            }
-        }
+       
         stage('Run Tests') {
             steps {
                 sh 'mvn test'
