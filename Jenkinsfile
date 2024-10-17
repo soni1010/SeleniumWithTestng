@@ -1,16 +1,27 @@
 pipeline {
-    agent any 
+    agent any
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/soni1010/SeleniumWithTestng'
+                git 'https://github.com/soni1010/SeleniumWithTestng'
             }
         }
-       
-    
-        stage('Publish Test Results') {
+        stage('Run Tests') {
             steps {
-                junit '**/Output.txt'
+                bat 'mvn test'  // Replace with 'sh' if on Linux/Mac
+            }
+        }
+        stage('Archive Output') {
+            steps {
+                archiveArtifacts artifacts: 'Output.txt', fingerprint: true
+            }
+        }
+        stage('Display Output') {
+            steps {
+                script {
+                    def output = readFile 'Output.txt'
+                    echo output
+                }
             }
         }
     }
